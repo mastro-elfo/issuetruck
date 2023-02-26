@@ -1,0 +1,8 @@
+.venv
+__pycache__
+ToDo*.md
+dist
+.vscode
+.pytest_cache
+.coverage
+htmlcov
