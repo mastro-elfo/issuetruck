@@ -32,9 +32,15 @@ jobs:
 
       - name: Run tests
         run: poetry run pytest
+
   build:
     needs: test
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.11"]
 
     steps:
       - name: Checkout
