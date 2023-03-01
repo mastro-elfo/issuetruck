@@ -74,7 +74,6 @@ jobs:
         with:
           tag_name: ${{ steps.release_version.outputs.version }}
           release_name: Release ${{ steps.release_version.outputs.version }}
-          asset_path: ./dist/
           draft: false
           prerelease: false
 
