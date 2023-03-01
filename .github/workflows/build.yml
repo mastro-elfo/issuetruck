@@ -84,3 +84,4 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./dist/*.whl
+          asset_name: IssueTruck-${{ steps.release_version.outputs.version }}
