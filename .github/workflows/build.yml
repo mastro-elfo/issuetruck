@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    tags:
-      - "v*"
 
 jobs:
   test:
@@ -58,6 +56,10 @@ jobs:
         with:
           version: 1.1.15
 
+      - name: Release version
+        id: release_version
+        run: echo "::set-output name=version::$(poetry version | cut -d " " -f 2)"
+
       - name: Install dependencies
         run: poetry install
 
@@ -69,7 +71,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.release_version.outputs.version }}
+          release_name: Release ${{ steps.release_version.outputs.version }}
+          asset_path: ./dist/
           draft: false
           prerelease: false
