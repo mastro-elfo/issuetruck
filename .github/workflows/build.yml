@@ -63,9 +63,6 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
-      - name: Update version
-        run: echo "__version__ = '${{ steps.release_version.outputs.version }}'" > issuetruck/__init__.py
-
       - name: Build
         run: poetry build
 
