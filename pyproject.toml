@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "IssueTruck"
-version = "1.6.0-alpha.0"
+version = "1.6.0-alpha.1"
 description = ""
 authors = ["Francesco <francesco.209@gmail.com>"]
 
