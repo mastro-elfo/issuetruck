@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import date
 from enum import Enum
 from functools import partial
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Literal, Optional
 
 from .compose import compose
 
@@ -314,3 +314,12 @@ def apply_filters(
 def print_issues(issues: list[Issue], file: "SupportsWrite[str] | None" = None) -> None:
     for issue in issues:
         print(issue, file=file)
+
+
+def format_comment(
+    today: date,
+    operation: Literal["create", "edit", "status"],
+    message: str,
+    end: str = "",
+):
+    return f"{today.day:02}/{today.month:02}/{today.year:04} - {operation} - {message}{end}"

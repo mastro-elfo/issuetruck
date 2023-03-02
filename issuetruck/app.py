@@ -11,6 +11,7 @@ from .issue import (
     StatusEnum,
     TypeEnum,
     apply_filters,
+    format_comment,
     get_by_id,
     get_new_id,
     get_new_priority,
@@ -41,6 +42,7 @@ def create_issue_cmd(
     subtitle: str = "",
     environment: str = "",
     milestone: str = "",
+    comment: str = "",
     filepath: Path = typer.Option(DEFAULT_PATH),
     start: int = 1,
 ):
@@ -57,6 +59,9 @@ def create_issue_cmd(
         subtitle=subtitle,
         environment=environment,
         milestone=milestone,
+        content=format_comment(date.today(), "create", comment, "\n\n")
+        if comment
+        else "",
     )
     issues.insert(0, new_issue)
     dump_path(filepath, issues)
@@ -74,6 +79,7 @@ def edit_issue_cmd(
     priority: Optional[PriorityEnum] = None,
     issue_type: Optional[TypeEnum] = typer.Option(None, "--type"),
     milestone: Optional[str] = None,
+    comment: str = "",
     filepath: Path = typer.Option(DEFAULT_PATH),
 ):
     issues: list[Issue] = parse_path(filepath)
@@ -104,6 +110,8 @@ def edit_issue_cmd(
         issue.type = issue_type
     if milestone is not None:
         issue.milestone = milestone
+    if comment:
+        issue.content += format_comment(date.today(), "edit", comment, "\n\n")
     dump_path(filepath, issues)
     print(f"Modified issue with id = {issue_id}")
 
@@ -156,6 +164,7 @@ def change_status(
     done: bool = typer.Option(False, "--done"),
     close: bool = typer.Option(False, "--close"),
     cancel: bool = typer.Option(False, "--cancel"),
+    comment: str = "",
     filepath: Path = typer.Option(DEFAULT_PATH),
 ):
     issues: list[Issue] = parse_path(filepath)
@@ -176,6 +185,8 @@ def change_status(
     if cancel and issue.status != StatusEnum.CANCELED:
         issue.status = StatusEnum.CANCELED
         issue.close_date = date.today()
+    if comment:
+        issue.content += format_comment(date.today(), "status", comment, "\n\n")
     dump_path(filepath, issues)
     print(f"Status set for issue with id = {issue_id}")
 

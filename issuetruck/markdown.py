@@ -42,10 +42,10 @@ def parse_file(file: TextIOWrapper) -> list[Issue]:
             current.priority = parts[5]
             current.type = parts[6]
             current.milestone = parts[7]
-        if tag in ("empty", "p", "li") and _content and current:
-            current.content += line
-        if tag == "empty" and _tdata:
             _content = True
+        if tag in ("empty", "p", "li") and _content and current:
+            if stripped := line.strip():
+                current.content += stripped + "\n"
 
     return issues
 

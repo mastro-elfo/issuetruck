@@ -21,6 +21,7 @@ from issuetruck.issue import (
     filter_by_type_bug,
     filter_by_type_feature,
     filter_by_type_improvement,
+    format_comment,
     get_by_id,
     get_new_id,
     get_new_priority,
@@ -262,6 +263,21 @@ def test_split_issues_to_archive():
     to_archive, to_keep = split_issues_to_archive(ISSUES_TO_KEEP)
     assert len(to_archive) == 0
     assert len(to_keep) == 2
+
+
+def test_format_comment():
+    assert (
+        format_comment(date(2020, 3, 4), "create", "message1", "ENDL")
+        == "04/03/2020 - create - message1ENDL"
+    )
+    assert (
+        format_comment(date(2021, 4, 5), "edit", "message2", "ENDL")
+        == "05/04/2021 - edit - message2ENDL"
+    )
+    assert (
+        format_comment(date(2022, 5, 6), "status", "message3", "ENDL")
+        == "06/05/2022 - status - message3ENDL"
+    )
 
 
 ISSUES: list[Issue] = [
