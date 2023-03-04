@@ -28,6 +28,8 @@ class TypeEnum(str, Enum):
     BUG = "Bug"
     FEATURE = "Feature"
     IMPROVEMENT = "Improvement"
+    EXPERIMENTAL = "Experimental"
+    MEMO = "Memo"
 
 
 @dataclass
@@ -72,11 +74,11 @@ class Issue:
 
     @property
     def _md_thead(self) -> str:
-        return "|  Status  | Open date  | Done date  | Close date | Environment | Priority |    Type     |  Milestone  |"
+        return "| Status   | Open date  | Done date  | Close date | Environment | Priority | Type         | Milestone   |"
 
     @property
     def _md_tsep(self) -> str:
-        return "| -------- | ---------- | ---------- | ---------- | ----------- | -------- | ----------- | ----------- |"
+        return "| -------- | ---------- | ---------- | ---------- | ----------- | -------- | ------------ | ----------- |"
 
     @property
     def _md_status(self) -> str:
@@ -120,7 +122,7 @@ class Issue:
 
     @property
     def _md_tdata(self) -> str:
-        return f"| {self._md_status:<8} | {self._md_open_date} | {self._md_done_date:<10} | {self._md_close_date:<10} | {self._md_environment:<11} | {self._md_priority:<8} | {self._md_type:<11} | {self.milestone:<11} |"
+        return f"| {self._md_status:<8} | {self._md_open_date} | {self._md_done_date:<10} | {self._md_close_date:<10} | {self._md_environment:<11} | {self._md_priority:<8} | {self._md_type:<12} | {self.milestone:<11} |"
 
     @property
     def _md_content(self) -> str:
@@ -205,6 +207,20 @@ def filter_by_type_improvement(issues: list[Issue], improvement: bool) -> list[I
     )
 
 
+def filter_by_type_experimental(issues: list[Issue], experimental: bool) -> list[Issue]:
+    return (
+        [issue for issue in issues if issue.type == TypeEnum.EXPERIMENTAL]
+        if experimental
+        else issues
+    )
+
+
+def filter_by_type_memo(issues: list[Issue], memo: bool) -> list[Issue]:
+    return (
+        [issue for issue in issues if issue.type == TypeEnum.MEMO] if memo else issues
+    )
+
+
 def filter_by_priority_low(issues: list[Issue], low: bool) -> list[Issue]:
     return (
         [issue for issue in issues if issue.priority == PriorityEnum.LOW]
@@ -285,6 +301,8 @@ def apply_filters(
     bug: bool = False,
     feature: bool = False,
     improvement: bool = False,
+    experimental: bool = False,
+    memo: bool = False,
     low: bool = False,
     medium: bool = False,
     high: bool = False,
@@ -301,6 +319,8 @@ def apply_filters(
         partial(filter_by_type_bug, bug=bug),
         partial(filter_by_type_feature, feature=feature),
         partial(filter_by_type_improvement, improvement=improvement),
+        partial(filter_by_type_experimental, experimental=experimental),
+        partial(filter_by_type_memo, memo=memo),
         partial(filter_by_priority_low, low=low),
         partial(filter_by_priority_medium, medium=medium),
         partial(filter_by_priority_high, high=high),

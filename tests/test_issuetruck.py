@@ -2,4 +2,4 @@ from issuetruck import __version__
 
 
 def test_version():
-    assert __version__ == "1.6.0-alpha.1"
+    assert __version__ == "1.7.0"

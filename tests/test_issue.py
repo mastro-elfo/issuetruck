@@ -19,8 +19,10 @@ from issuetruck.issue import (
     filter_by_status_test,
     filter_by_title,
     filter_by_type_bug,
+    filter_by_type_experimental,
     filter_by_type_feature,
     filter_by_type_improvement,
+    filter_by_type_memo,
     format_comment,
     get_by_id,
     get_new_id,
@@ -64,74 +66,86 @@ def test_format():
 
 def test_filter_by_status_open():
     assert len(filter_by_status_open([], True)) == 0
-    assert len(filter_by_status_open(ISSUES, True)) == 1
-    assert len(filter_by_status_open(ISSUES, False)) == 4
+    assert len(filter_by_status_open(ISSUES, True)) == 2
+    assert len(filter_by_status_open(ISSUES, False)) == len(ISSUES)
 
 
 def test_filter_by_status_closed():
     assert len(filter_by_status_closed([], True)) == 0
     assert len(filter_by_status_closed(ISSUES, True)) == 1
-    assert len(filter_by_status_closed(ISSUES, False)) == 4
+    assert len(filter_by_status_closed(ISSUES, False)) == len(ISSUES)
 
 
 def test_filter_by_status_test():
     assert len(filter_by_status_test([], True)) == 0
     assert len(filter_by_status_test(ISSUES, True)) == 1
-    assert len(filter_by_status_test(ISSUES, False)) == 4
+    assert len(filter_by_status_test(ISSUES, False)) == len(ISSUES)
 
 
 def test_filter_by_status_canceled():
     assert len(filter_by_status_canceled([], True)) == 0
     assert len(filter_by_status_canceled(ISSUES, True)) == 1
-    assert len(filter_by_status_canceled(ISSUES, False)) == 4
+    assert len(filter_by_status_canceled(ISSUES, False)) == len(ISSUES)
 
 
 def test_filter_by_type_bug():
     assert len(filter_by_type_bug([], True)) == 0
     assert len(filter_by_type_bug(ISSUES, True)) == 1
-    assert len(filter_by_type_bug(ISSUES, False)) == 4
+    assert len(filter_by_type_bug(ISSUES, False)) == len(ISSUES)
 
 
 def test_filter_by_type_feature():
     assert len(filter_by_type_feature([], True)) == 0
     assert len(filter_by_type_feature(ISSUES, True)) == 1
-    assert len(filter_by_type_feature(ISSUES, False)) == 4
+    assert len(filter_by_type_feature(ISSUES, False)) == len(ISSUES)
 
 
 def test_filter_by_type_improvement():
     assert len(filter_by_type_improvement([], True)) == 0
-    assert len(filter_by_type_improvement(ISSUES, True)) == 2
-    assert len(filter_by_type_improvement(ISSUES, False)) == 4
+    assert len(filter_by_type_improvement(ISSUES, True)) == 1
+    assert len(filter_by_type_improvement(ISSUES, False)) == len(ISSUES)
+
+
+def test_filter_by_type_experimental():
+    assert len(filter_by_type_experimental([], True)) == 0
+    assert len(filter_by_type_experimental(ISSUES, True)) == 1
+    assert len(filter_by_type_experimental(ISSUES, False)) == len(ISSUES)
+
+
+def test_filter_by_type_memo():
+    assert len(filter_by_type_memo([], True)) == 0
+    assert len(filter_by_type_memo(ISSUES, True)) == 1
+    assert len(filter_by_type_memo(ISSUES, False)) == len(ISSUES)
 
 
 def test_filter_by_priority_medium():
     assert len(filter_by_priority_medium([], True)) == 0
-    assert len(filter_by_priority_medium(ISSUES, True)) == 1
-    assert len(filter_by_priority_medium(ISSUES, False)) == 4
+    assert len(filter_by_priority_medium(ISSUES, True)) == 2
+    assert len(filter_by_priority_medium(ISSUES, False)) == len(ISSUES)
 
 
 def test_filter_by_priority_low():
     assert len(filter_by_priority_low([], True)) == 0
     assert len(filter_by_priority_low(ISSUES, True)) == 1
-    assert len(filter_by_priority_low(ISSUES, False)) == 4
+    assert len(filter_by_priority_low(ISSUES, False)) == len(ISSUES)
 
 
 def test_filter_by_priority_high():
     assert len(filter_by_priority_high([], True)) == 0
     assert len(filter_by_priority_high(ISSUES, True)) == 1
-    assert len(filter_by_priority_high(ISSUES, False)) == 4
+    assert len(filter_by_priority_high(ISSUES, False)) == len(ISSUES)
 
 
 def test_filter_by_priority_critical():
     assert len(filter_by_priority_critical([], True)) == 0
     assert len(filter_by_priority_critical(ISSUES, True)) == 1
-    assert len(filter_by_priority_critical(ISSUES, False)) == 4
+    assert len(filter_by_priority_critical(ISSUES, False)) == len(ISSUES)
 
 
 def test_filter_by_environment():
     assert len(filter_by_environment([], "DEV")) == 0
     assert len(filter_by_environment(ISSUES, "DEV")) == 1
-    assert len(filter_by_environment(ISSUES, None)) == 4
+    assert len(filter_by_environment(ISSUES, None)) == len(ISSUES)
 
 
 def test_filter_by_milestone():
@@ -143,7 +157,7 @@ def test_filter_by_milestone():
     assert len(filter_by_milestone(ISSUES, "1.2.3")) == 1
     assert len(filter_by_milestone([], "2.")) == 0
     assert len(filter_by_milestone(ISSUES, "2.")) == 1
-    assert len(filter_by_milestone(ISSUES, None)) == 4
+    assert len(filter_by_milestone(ISSUES, None)) == len(ISSUES)
 
 
 def test_filter_by_title():
@@ -152,34 +166,65 @@ def test_filter_by_title():
     assert len(filter_by_title([], "DEF")) == 0
     assert len(filter_by_title([], "ghi")) == 0
     assert len(filter_by_title([], "XYZ")) == 0
-    assert len(filter_by_title(ISSUES, None)) == 4
-    assert len(filter_by_title(ISSUES, "")) == 4
+    assert len(filter_by_title(ISSUES, None)) == len(ISSUES)
+    assert len(filter_by_title(ISSUES, "")) == len(ISSUES)
     assert len(filter_by_title(ISSUES, "DEF")) == 2
     assert len(filter_by_title(ISSUES, "ghi")) == 2
     assert len(filter_by_title(ISSUES, "XYZ")) == 0
 
 
 def test_apply_filters():
+    assert len(apply_filters([])) == 0
+    assert len(apply_filters(ISSUES)) == len(ISSUES)
+
     assert len(apply_filters([], is_open=True)) == 0
-    assert len(apply_filters(ISSUES, is_open=True)) == 1
+    assert len(apply_filters(ISSUES, is_open=True)) == 2
+    assert len(apply_filters(ISSUES, is_open=False)) == len(ISSUES)
+
     assert len(apply_filters([], closed=True)) == 0
     assert len(apply_filters(ISSUES, closed=True)) == 1
+    assert len(apply_filters(ISSUES, closed=False)) == len(ISSUES)
+
     assert len(apply_filters([], test=True)) == 0
     assert len(apply_filters(ISSUES, test=True)) == 1
+    assert len(apply_filters(ISSUES, test=False)) == len(ISSUES)
+
     assert len(apply_filters([], bug=True)) == 0
     assert len(apply_filters(ISSUES, bug=True)) == 1
+    assert len(apply_filters(ISSUES, bug=False)) == len(ISSUES)
+
     assert len(apply_filters([], feature=True)) == 0
     assert len(apply_filters(ISSUES, feature=True)) == 1
+    assert len(apply_filters(ISSUES, feature=False)) == len(ISSUES)
+
     assert len(apply_filters([], improvement=True)) == 0
-    assert len(apply_filters(ISSUES, improvement=True)) == 2
+    assert len(apply_filters(ISSUES, improvement=True)) == 1
+    assert len(apply_filters(ISSUES, improvement=False)) == len(ISSUES)
+
+    assert len(apply_filters([], experimental=True)) == 0
+    assert len(apply_filters(ISSUES, experimental=True)) == 1
+    assert len(apply_filters(ISSUES, experimental=False)) == len(ISSUES)
+
+    assert len(apply_filters([], memo=True)) == 0
+    assert len(apply_filters(ISSUES, memo=True)) == 1
+    assert len(apply_filters(ISSUES, memo=False)) == len(ISSUES)
+
     assert len(apply_filters([], low=True)) == 0
     assert len(apply_filters(ISSUES, low=True)) == 1
+    assert len(apply_filters(ISSUES, low=False)) == len(ISSUES)
+
     assert len(apply_filters([], medium=True)) == 0
-    assert len(apply_filters(ISSUES, medium=True)) == 1
+    assert len(apply_filters(ISSUES, medium=True)) == 2
+    assert len(apply_filters(ISSUES, medium=False)) == len(ISSUES)
+
     assert len(apply_filters([], high=True)) == 0
     assert len(apply_filters(ISSUES, high=True)) == 1
+    assert len(apply_filters(ISSUES, high=False)) == len(ISSUES)
+
     assert len(apply_filters([], critical=True)) == 0
     assert len(apply_filters(ISSUES, critical=True)) == 1
+    assert len(apply_filters(ISSUES, critical=False)) == len(ISSUES)
+
     assert len(apply_filters([], environment="DEV")) == 0
     assert len(apply_filters(ISSUES, environment="DEV")) == 1
     assert len(apply_filters([], milestone="1.")) == 0
@@ -190,19 +235,25 @@ def test_apply_filters():
     assert len(apply_filters(ISSUES, milestone="1.2.3")) == 1
     assert len(apply_filters([], milestone="2.")) == 0
     assert len(apply_filters(ISSUES, milestone="2.")) == 1
+    assert len(apply_filters(ISSUES, milestone="2.")) == 1
+    assert len(apply_filters(ISSUES, milestone="")) == len(ISSUES)
+    assert len(apply_filters(ISSUES, milestone=None)) == len(ISSUES)
+
     assert len(apply_filters([], title="DEF")) == 0
     assert len(apply_filters(ISSUES, title="DEF")) == 2
     assert len(apply_filters(ISSUES, title="ghi")) == 2
     assert len(apply_filters(ISSUES, title="XYZ")) == 0
+    assert len(apply_filters(ISSUES, title="")) == len(ISSUES)
+    assert len(apply_filters(ISSUES, title=None)) == len(ISSUES)
 
 
 def test_get_new_id():
-    assert get_new_id(ISSUES) == 5
-    assert get_new_id(ISSUES, 3) == 5
-    assert get_new_id(ISSUES, 7) == 7
+    assert get_new_id(ISSUES) == 6
+    assert get_new_id(ISSUES, 3) == 6
+    assert get_new_id(ISSUES, 100) == 100
     assert get_new_id([]) == 1
     assert get_new_id([], 3) == 3
-    assert get_new_id([], 7) == 7
+    assert get_new_id([], 100) == 100
 
 
 def test_get_new_priority():
@@ -254,9 +305,6 @@ def test_split_issues_to_archive():
     to_archive, to_keep = split_issues_to_archive([])
     assert len(to_archive) == 0
     assert len(to_keep) == 0
-    to_archive, to_keep = split_issues_to_archive(ISSUES)
-    assert len(to_archive) == 1
-    assert len(to_keep) == 3
     to_archive, to_keep = split_issues_to_archive(ISSUES_TO_ARCHIVE)
     assert len(to_archive) == 1
     assert len(to_keep) == 1
@@ -316,10 +364,20 @@ ISSUES: list[Issue] = [
         title="JKL",
         status=StatusEnum.CANCELED,
         open_date=date(2020, 2, 2),
-        type=TypeEnum.IMPROVEMENT,
+        type=TypeEnum.MEMO,
         priority=PriorityEnum.MEDIUM,
         environment="PROD",
         milestone="2.0.0",
+    ),
+    Issue(
+        id=5,
+        title="JKL",
+        status=StatusEnum.OPEN,
+        open_date=date(2020, 2, 2),
+        type=TypeEnum.EXPERIMENTAL,
+        priority=PriorityEnum.MEDIUM,
+        environment="PROD",
+        milestone="3.0.0",
     ),
 ]
 
