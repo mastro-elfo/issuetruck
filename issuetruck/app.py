@@ -15,6 +15,7 @@ from .issue import (
     get_by_id,
     get_new_id,
     get_new_priority,
+    paginate,
     print_issues,
     split_issues_to_archive,
 )
@@ -132,6 +133,8 @@ def list_issue_cmd(
     env: Optional[str] = None,
     mil: Optional[str] = None,
     tit: Optional[str] = None,
+    limit: Optional[int] = None,
+    skip: Optional[int] = None,
     filepath: Path = typer.Option(DEFAULT_PATH),
 ):
     issues: list[Issue] = parse_path(filepath)
@@ -152,9 +155,10 @@ def list_issue_cmd(
         milestone=mil,
         title=tit,
     )
-    print(f"Filter result {len(filtered_issues)}/{len(issues)}")
+    paginated_issues = paginate(filtered_issues, skip=skip, limit=limit)
+    print(f"Filter result {len(paginated_issues)}/{len(issues)}")
     print("")
-    print_issues(filtered_issues)
+    print_issues(paginated_issues)
 
 
 @app.command("status")

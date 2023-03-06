@@ -27,6 +27,7 @@ from issuetruck.issue import (
     get_by_id,
     get_new_id,
     get_new_priority,
+    paginate,
     print_issues,
     split_issues_to_archive,
 )
@@ -326,6 +327,17 @@ def test_format_comment():
         format_comment(date(2022, 5, 6), "status", "message3", "ENDL")
         == "06/05/2022 - status - message3ENDL"
     )
+
+
+def test_paginate():
+    assert len(paginate([])) == 0
+    assert len(paginate([], skip=2)) == 0
+    assert len(paginate([], limit=3)) == 0
+    assert len(paginate([], skip=2, limit=3)) == 0
+    assert len(paginate(ISSUES)) == len(ISSUES)
+    assert len(paginate(ISSUES, skip=2)) == len(ISSUES) - 2
+    assert len(paginate(ISSUES, limit=3)) == 3
+    assert len(paginate(ISSUES, skip=2, limit=3)) == 3
 
 
 ISSUES: list[Issue] = [

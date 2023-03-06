@@ -343,3 +343,14 @@ def format_comment(
     end: str = "",
 ):
     return f"{today.day:02}/{today.month:02}/{today.year:04} - {operation} - {message}{end}"
+
+
+def paginate(
+    issues: list[Issue], skip: Optional[int] = None, limit: Optional[int] = None
+) -> list[Issue]:
+    paginated = issues.copy()
+    if skip is not None:
+        paginated = paginated[skip:]
+    if limit is not None:
+        paginated = paginated[:limit]
+    return paginated
